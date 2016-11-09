@@ -1,0 +1,70 @@
+.equ LED_PORT = PORTA
+.equ LED_DDR = DDRA
+.equ cnt = 10
+
+.def tmp = r16
+
+#pazi na redoslijed resetova, rjmp reset i cseg moraju biti prije 0x002 etc.
+
+.cseg
+        rjmp reset
+
+.org 0x002
+        rjmp pali
+.org 0x004
+        rjmp gasi
+
+reset:
+	#inicijalizacija
+        ldi tmp, low(RAMEND)
+        out SPL, tmp
+        ldi tmp, high(RAMEND)
+        out SPH, tmp
+
+        ldi tmp, (1<<ISC00)|(1<<ISC01)|(1<<ISC10)|(1<<ISC11)
+        out MCUCR, tmp
+        ldi tmp, (1<<INT0)|(1<<INT1)
+        out GICR, tmp
+        sei
+
+        ldi tmp, 0xff
+        out LED_DDR, tmp
+        ldi tmp, 0xff
+        out LED_PORT, tmp
+
+main:
+
+rjmp main
+
+pali:
+        clc
+        rol tmp
+
+        out LED_PORT, tmp
+        rcall delay
+
+reti
+
+gasi:
+        sec
+        ror tmp 
+
+        out LED_PORT, tmp
+        rcall delay
+        //ldi tmp, (1<<INTF1)
+        //out GIFR, tmp //debounce checkanje || dizes interruptove da drugi moze doc na red
+reti
+
+#delay subrutina
+delay:
+        clr r19
+        clr r20
+        ldi r21, cnt
+        delay_loop:
+                dec r19
+                brne delay_loop
+                dec r20
+                brne delay_loop
+                dec r21
+                brne delay_loop
+ret

@@ -1,0 +1,82 @@
+#paljenje s buttonom dok se sve ne upale, gasenje s drugim
+.equ LED_PORT = PORTA
+.equ LED_DDR = DDRA
+.equ BUTT_PORT = PORTB
+.equ BUTT_DDR = DDRB
+.equ cnt = 10
+
+.def tmp = r16
+
+.def flag = r17
+
+.cseg
+        rjmp reset
+
+reset:
+        ldi tmp, low(RAMEND)
+        out SPL, tmp
+        ldi tmp, high(RAMEND)
+        out SPH, tmp
+
+        ldi tmp, 0xff
+        out LED_DDR, tmp
+        out LED_PORT, tmp
+
+        ldi tmp, 0b11111100
+        out BUTT_DDR, tmp
+        ldi tmp, 0b00000011
+        out BUTT_PORT, tmp
+
+        ldi tmp, 0xff
+        ldi flag, 0
+main:
+        sbis pinb, 0
+                rcall pali_setup
+        sbis pinb, 1
+                rcall gasi_setup
+
+        sbrc flag, 0
+                rcall pali
+        sbrc flag, 1
+                rcall gasi
+rjmp main
+
+pali_setup:
+        ldi flag, (1<<0)
+ret
+
+gasi_setup:
+        ldi flag, (1<<1)
+ret
+
+pali:
+        in tmp, porta
+        clc
+        rol tmp
+
+        out LED_PORT, tmp
+        rcall delay
+ret
+
+gasi:
+        in tmp, porta
+        sec
+        ror tmp
+
+        out LED_PORT, tmp
+        rcall delay
+ret
+
+
+delay:
+        dec r19
+        dec r20
+        ldi r21, cnt
+        delay_loop:
+                dec r19
+                brne delay_loop
+                dec r20
+                brne delay_loop
+                dec r21
+                brne delay_loop
+ret

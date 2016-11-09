@@ -1,0 +1,102 @@
+.equ LED_PORT = PORTA
+.equ LED_DDR = DDRA
+.equ BUTT_PORT = PORTB
+.equ BUTT_DDR = DDRB
+.equ cnt = 10
+
+.def tmp = r16
+.def flag = r17
+.def mask = r18
+
+.cseg
+        rjmp reset
+
+reset:
+        ldi tmp, low(RAMEND)
+        out SPL, tmp
+        ldi tmp, high(RAMEND)
+        out SPH, tmp
+
+        ldi tmp, 0b11111111
+        out LED_DDR, tmp
+        out LED_PORT, tmp
+
+        ldi tmp, 0b00001111
+        out BUTT_PORT, tmp
+        ldi tmp, 0x00
+        out BUTT_DDR, tmp
+
+        ldi tmp, 0b11111111
+                ldi flag, 0
+                ldi mask, 0b00001000
+
+main:
+        sbis pinb, 0
+                rcall setup_0
+                sbis pinb, 1
+                                rcall setup_1
+                sbis pinb, 2
+                                rcall setup_2
+
+                sbrc flag, 0
+                        rcall aktivnost_1
+                sbrc flag, 1
+                        rcall aktivnost_2
+                sbrc flag, 2
+                        rcall aktivnost_3
+
+
+        rcall delay
+        out LED_PORT, tmp
+
+rjmp main
+
+setup_0:
+        ldi flag, (1<<0)
+        ldi tmp, 0xff
+ret
+setup_1:
+        ldi flag, (1<<1)
+        ldi tmp, 0xff
+ret
+setup_2:
+        ldi flag, (1<<2)
+        ldi tmp, 0xff
+ret
+
+
+delay:
+        clr r19
+        clr r20
+        ldi r21, cnt
+        delay_loop:
+                dec r19
+                brne delay_loop
+                dec r20
+                brne delay_loop
+                dec r21
+                brne delay_loop
+ret
+
+aktivnost_1:
+         eor tmp, mask
+ret
+
+aktivnost_2:
+            rol tmp
+            out LED_PORT, tmp
+            rcall delay
+ret
+
+aktivnost_3:
+                cpi tmp, 0x00
+                brne rollaj
+        ldi tmp, 0xff
+        out LED_PORT, tmp
+        rcall delay
+        rollaj:
+                ror tmp
+                clc
+                out LED_PORT, tmp
+                rcall delay
+ret

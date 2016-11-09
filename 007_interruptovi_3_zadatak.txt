@@ -1,0 +1,92 @@
+.equ LED_PORT = PORTA
+.equ LED_DDR = DDRA
+.equ cnt = 10
+
+.def tmp = r16
+.def tmp2= r17
+.def counter = r18
+
+.cseg
+        rjmp reset
+
+.org 0x002
+        rjmp pali
+.org 0x004
+        rjmp gasi
+
+reset:
+        ldi tmp, low(RAMEND)
+        out SPL, tmp
+        ldi tmp, high(RAMEND)
+        out SPH, tmp
+
+        ldi tmp, (1<<ISC00)|(1<<ISC01)|(1<<ISC10)|(1<<ISC11)
+        out MCUCR, tmp
+        ldi tmp, (1<<INT0)|(1<<INT1)
+        out GICR, tmp
+        sei
+
+        ldi tmp, 0xff
+        out LED_DDR, tmp
+        ldi tmp, 0xff
+        out LED_PORT, tmp
+
+        ldi tmp2, 0xff
+        ldi counter, 0
+main:
+
+rjmp main
+
+pali:
+        in tmp, porta //ucitaj stanje porta u tmp
+        cpi tmp, 0x00  //usporedi tmp s 0
+                brne nastavi //ako nije jednako skoci na nastavi
+        ldi counter, 0  //setaj counter na nula
+        rcall blink   //pozovi blink subrutinu
+
+        nastavi:  //skok ako je cpi uspjesan
+        clc   //clearaj carry
+        rol tmp   //rollaj tmp u levo
+ 
+        out LED_PORT, tmp
+        rcall delay
+        ldi tmp, (1<<INTF0) //digni interrupt flag da drugi moze napravit prekid
+        out GIFR, tmp //debounce checkanje 
+
+reti
+
+gasi:
+        in tmp, porta //ucitaj stanje porta u tmp registar
+        sec //set carry
+        ror tmp //rollaj tmp udesno
+
+        out LED_PORT, tmp
+        rcall delay
+        ldi tmp, (1<<INTF1) //digni interrupt flag da drugi moze doc na red
+        out GIFR, tmp //debounce checkanje
+reti
+
+#delay subrutina
+delay:
+        clr r19
+        clr r20
+        ldi r21, cnt
+        delay_loop:
+                dec r19
+                brne delay_loop
+                dec r20
+                brne delay_loop
+                dec r21
+                brne delay_loop
+ret
+
+#blinkanje 5 puta, mora biti x2 
+
+blink:
+        inc counter
+        out LED_PORT, tmp2
+        com tmp2
+        rcall delay
+        cpi counter, 10
+                brne blink
+ret

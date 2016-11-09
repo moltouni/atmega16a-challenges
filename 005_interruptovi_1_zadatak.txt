@@ -1,0 +1,48 @@
+.equ LED_PORT = PORTA
+.equ LED_DDR = DDRA
+
+.def tmp = r16
+
+.org 0x002
+        rjmp pali
+.org 0x004
+        rjmp gasi
+
+.cseg
+        rjmp reset
+
+#inicijalizacija
+reset:
+	#standard stack init
+        ldi tmp, low(RAMEND)
+        out SPL, tmp
+        ldi tmp, high(RAMEND)
+        out SPH, tmp
+
+	#init interruptova (ISC00 i ISC01 se dizu za prvi interrupt, ostali za drugi, kao i int0 i int1
+        ldi tmp, (1<<ISC00)|(1<<ISC01)|(1<<ISC10)|(1<<ISC11)
+        out MCUCR, tmp
+        ldi tmp, (1<<INT0)|(1<<INT1)
+        out GICR, tmp
+        sei
+
+	#inicijalizacija ledice
+        ldi tmp, (1<<0)
+        out LED_DDR, tmp
+        ldi tmp, (1<<0)
+        out LED_PORT, tmp
+
+main:
+
+rjmp main
+
+#set tmp i pali
+pali:
+        ldi tmp, 0b11111110
+        out LED_PORT, tmp
+reti
+#set tmp i gasi
+gasi:
+        ldi tmp,0xff
+        out LED_PORT, tmp
+reti

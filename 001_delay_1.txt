@@ -1,0 +1,48 @@
+.equ LED_PORT = PORTA
+.equ LED_DDR = DDRA
+.equ cnt = 10
+
+.def tmp = r22
+
+
+.cseg
+        rjmp reset
+
+reset:
+        ldi tmp, low(RAMEND)
+        out SPL, tmp
+        ldi tmp, high(RAMEND)
+        out SPH, tmp
+
+        ldi tmp, 0xff
+        out LED_DDR, tmp
+        out LED_PORT, tmp
+
+        ldi tmp,0xff
+
+main:
+
+        cpi tmp, 0x00
+                brne rollaj
+        ldi tmp, 0xff
+        out LED_PORT, tmp
+        rcall delay
+        rollaj:
+                ror tmp
+                clc
+                out LED_PORT, tmp
+                rcall delay
+rjmp main
+
+delay:
+        clr r18
+        clr r19
+        ldi r20, cnt
+        delay_loop:
+                dec r18
+                brne delay_loop
+                dec r19
+                brne delay_loop
+                dec r20
+                brne delay_loop
+ret
