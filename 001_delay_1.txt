@@ -1,3 +1,8 @@
+/* Running light sa delay subrutinom
+
+Napravite program koji blinka cetvrtu LEDicu na razvojnoj plocici
+ */
+
 .equ LED_PORT = PORTA
 .equ LED_DDR = DDRA
 .equ cnt = 10

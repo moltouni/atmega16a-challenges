@@ -1,3 +1,11 @@
+/* Cetiri aktivnosti iz vjezbi s buttonima, svaki button pali svoju
+
+Implementirajte zadatke 2-4 sa proˇslih vjeˇzbi kao odvojene aktivnosti koje
+se pokre´cu pritiskom na odgovaraju´cu tipku te se izvrˇsavaju dok se
+sljede´ca tipka ne pritisne. Tipka 1 i dalje ima funkciju iz prvog zadatka.
+
+ */
+
 .equ LED_PORT = PORTA
 .equ LED_DDR = DDRA
 .equ BUTT_PORT = PORTB
@@ -34,13 +42,13 @@ reset:
                                 ldi flag2, 1
 
 main:
-                                sbis pinb, 0
-                                                                rcall setup_0
+                sbis pinb, 0
+                                rcall setup_0
                 sbis pinb, 1
                                 rcall setup_1
                 sbis pinb, 2
                                 rcall setup_2
-                                sbis pinb, 3
+                sbis pinb, 3
                                 rcall setup_3
 
 
@@ -50,7 +58,7 @@ main:
                         rcall aktivnost_2
                 sbrc flag, 2
                         rcall aktivnost_3
-                                sbrc flag, 3
+                sbrc flag, 3
                         rcall aktivnost_4
 
 
@@ -74,7 +82,7 @@ ret
 
 setup_3:
         ldi flag, (1<<3)
-                ori tmp, 0b11110111
+        ori tmp, 0b11110111
 
 ret
 

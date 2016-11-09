@@ -1,3 +1,9 @@
+/* ROR i ROL ledice pomocu interruptova - prvi rola drugi ror
+
+Napraviti program koji pritiskom na INT0 pali jednu po jednu LED diodu,
+puˇstaju´ci pritom sve prethodne upaljene, dok se pritiskom na INT1 LED
+diode gase.*/
+
 .equ LED_PORT = PORTA
 .equ LED_DDR = DDRA
 .equ cnt = 10

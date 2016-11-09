@@ -1,3 +1,7 @@
+/*Nadopunite zadatak 2 sa proˇslih laboratorijskih vjeˇzbi na naˇcin da se
+pritiskom na INT0 sve aktivnosti pauziraju, a pritiskom na INT1 ponovno
+pokrenu.*/
+
 .equ LED_PORT = PORTA
 .equ LED_DDR = DDRA
 .equ BUTT_PORT = PORTB
