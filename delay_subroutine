@@ -1,0 +1,19 @@
+DELAY SUBROUTINE
+
+A = 256 * (1 + 2) - 1
+B = 256 * (A + 1 + 2) - 1
+C = X * (B + 1 + 2) - 1
+
+X = (fCLK / fL)
+
+(fCLK / fL) = X * (B + 1 + 2) - 1
+X = (2fL + fCLK) / (2fL * (B + 1 + 2))
+
+CHALLENGE
+---
+Implement 0.5s delay
+
+fL = 0.5 [s]
+fL = 1/0.5 = 2 Hz
+
+X = 9
