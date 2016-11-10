@@ -1,3 +1,9 @@
+/* Paljenje i gasenje ledice sa interruptovima 
+
+Napiˇsite program koji pritiskom na INT0 upali prvu LED diodu na
+razvojnoj ploˇcici, a pritiskom na INT1 istu ugasi.
+*/
+
 .equ LED_PORT = PORTA
 .equ LED_DDR = DDRA
 

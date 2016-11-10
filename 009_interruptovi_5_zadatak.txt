@@ -1,3 +1,7 @@
+/* Napiˇsite program koji ´ce simulirati rad “trˇce´ceg svjetla” te nadodajte
+mogu´cnost promjene frekvencije blinkanja promjene koriste´ci vanjske
+prekide (INT0 za pove´canje i INT1 za smanjenje).*/
+
 .equ LED_PORT = PORTA
 .equ LED_DDR = DDRA
 

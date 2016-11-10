@@ -1,3 +1,5 @@
+/* Buttoni vise aktivnost, svaki pali svoju - pali/gasi, running led i led punjenj - kad se napuni reset na nula */
+
 .equ LED_PORT = PORTA
 .equ LED_DDR = DDRA
 .equ BUTT_PORT = PORTB
@@ -89,8 +91,8 @@ aktivnost_2:
 ret
 
 aktivnost_3:
-                cpi tmp, 0x00
-                brne rollaj
+        cpi tmp, 0x00
+        brne rollaj
         ldi tmp, 0xff
         out LED_PORT, tmp
         rcall delay

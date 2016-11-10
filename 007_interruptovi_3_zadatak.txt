@@ -1,3 +1,8 @@
+/*
+Nadopunite prethodni zadatak da u trenutku kada su sve LED diode
+upaljene idu´ci pritisak na INT0 pokre´ce blinkanje svih LED dioda pet puta
+*/
+
 .equ LED_PORT = PORTA
 .equ LED_DDR = DDRA
 .equ cnt = 10
